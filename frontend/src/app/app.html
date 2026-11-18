@@ -1,20 +1,34 @@
+<header class="hero">
+  <div class="hero-inner">
+    <span class="badge">Powered by Claude AI</span>
+    <h1>AI Resume Analyzer</h1>
+    <p class="subtitle">Get instant, specific feedback on your resume and see how well it matches a job.</p>
+  </div>
+</header>
+
 <main class="container">
-  <h1>AI Resume Analyzer</h1>
-  <p class="subtitle">Upload your resume and get instant AI feedback.</p>
+  <section class="card upload">
+    <label class="dropzone" [class.has-file]="selectedFile()">
+      <input type="file" accept=".pdf,.docx" (change)="onFileSelected($event)" hidden />
+      <span class="dz-icon">{{ selectedFile() ? '✅' : '📄' }}</span>
+      <span class="dz-title">{{ selectedFile() ? selectedFile()!.name : 'Click to choose your resume' }}</span>
+      <span class="dz-hint">PDF or DOCX, up to 5 MB</span>
+    </label>
 
-  <section class="card">
-    <label class="label">Resume (PDF or DOCX)</label>
-    <input type="file" accept=".pdf,.docx" (change)="onFileSelected($event)" />
-
-    <label class="label">Job description (optional)</label>
+    <label class="label" for="jd">Job description <span class="optional">(optional)</span></label>
     <textarea
+      id="jd"
       rows="5"
-      placeholder="Paste a job description to see how well you match..."
+      placeholder="Paste a job description to see your match score and missing keywords..."
       [(ngModel)]="jobDescription"
     ></textarea>
 
     <button (click)="analyze()" [disabled]="loading()">
-      {{ loading() ? 'Analyzing... (up to 30 seconds)' : 'Analyze Resume' }}
+      @if (loading()) {
+        <span class="spinner"></span> Analyzing your resume...
+      } @else {
+        Analyze Resume
+      }
     </button>
 
     @if (error()) {
@@ -23,50 +37,45 @@
   </section>
 
   @if (result(); as r) {
-    <section class="card">
+    <section class="card results">
       <div class="scores">
-        <div class="score">
-          <span class="num">{{ r.overallScore }}</span>
+        <div class="score-block">
+          <div
+            class="ring"
+            [style.--p]="r.overallScore"
+            [class.good]="r.overallScore >= 75"
+            [class.ok]="r.overallScore >= 50 && r.overallScore < 75"
+            [class.low]="r.overallScore < 50"
+          >
+            <div class="ring-inner">{{ r.overallScore }}</div>
+          </div>
           <span class="cap">Overall score</span>
         </div>
+
         @if (r.matchScore !== null && r.matchScore !== undefined) {
-          <div class="score">
-            <span class="num">{{ r.matchScore }}</span>
+          <div class="score-block">
+            <div
+              class="ring"
+              [style.--p]="r.matchScore"
+              [class.good]="r.matchScore >= 75"
+              [class.ok]="r.matchScore >= 50 && r.matchScore < 75"
+              [class.low]="r.matchScore < 50"
+            >
+              <div class="ring-inner">{{ r.matchScore }}</div>
+            </div>
             <span class="cap">Job match</span>
           </div>
         }
+
+        <p class="summary">{{ r.summary }}</p>
       </div>
 
-      <h2>Summary</h2>
-      <p>{{ r.summary }}</p>
-
-      <h2>Skills</h2>
+      <h2>Skills found</h2>
       <div class="chips">
         @for (s of r.skills; track s) {
           <span class="chip">{{ s }}</span>
         }
       </div>
-
-      <h2>Strengths</h2>
-      <ul>
-        @for (s of r.strengths; track s) {
-          <li>{{ s }}</li>
-        }
-      </ul>
-
-      <h2>Weaknesses</h2>
-      <ul>
-        @for (w of r.weaknesses; track w) {
-          <li>{{ w }}</li>
-        }
-      </ul>
-
-      <h2>Suggestions</h2>
-      <ul>
-        @for (s of r.suggestions; track s) {
-          <li>{{ s }}</li>
-        }
-      </ul>
 
       @if (r.missingKeywords && r.missingKeywords.length) {
         <h2>Missing keywords</h2>
@@ -76,6 +85,37 @@
           }
         </div>
       }
+
+              <div class="boxes">
+        <div class="box good-box">
+          <div class="box-head"><span class="box-icon"></span><h2 style="color: green; font-weight: 1000;">STRENGTHS</h2></div>
+          <ul>
+            @for (s of r.strengths; track s) {
+              <li>{{ s }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="box bad-box">
+          <div class="box-head"><span class="box-icon"></span><h2 style="color: rgb(173, 22, 22); font-weight: 1000;">WEAKNESS</h2></div>
+          <ul>
+            @for (w of r.weaknesses; track w) {
+              <li>{{ w }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="box tips-box">
+          <div class="box-head"><span class="box-icon"></span><h2 style="color: rgba(122, 14, 122, 0.973); font-weight: 1000;">SUGGESTIONS</h2></div>
+          <ul>
+            @for (s of r.suggestions; track s) {
+              <li>{{ s }}</li>
+            }
+          </ul>
+        </div>
+      </div>
     </section>
   }
 </main>
+
+<footer class="footer">Built with Angular, Spring Boot, FastAPI and Claude</footer>
