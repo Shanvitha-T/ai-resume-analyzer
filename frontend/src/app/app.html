@@ -116,6 +116,25 @@
       </div>
     </section>
   }
+    @if (history().length) {
+    <section class="card history">
+      <h2 class="history-title">Past analyses</h2>
+      <ul class="history-list">
+        @for (h of history(); track h.id) {
+          <li>
+            <button class="history-item" (click)="openHistory(h.id)">
+              <span class="h-name">{{ h.fileName }}</span>
+              <span class="h-date">{{ h.createdAt.substring(0, 10) }}</span>
+              <span class="h-score">Score {{ h.overallScore }}</span>
+              @if (h.matchScore >= 0) {
+                <span class="h-score match">Match {{ h.matchScore }}</span>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+  }
 </main>
 
 <footer class="footer">Built with Angular, Spring Boot, FastAPI and Claude</footer>

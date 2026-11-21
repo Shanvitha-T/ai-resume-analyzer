@@ -13,10 +13,18 @@ export interface AnalysisResult {
   missingKeywords: string[];
 }
 
+export interface HistoryItem {
+  id: number;
+  fileName: string;
+  overallScore: number;
+  matchScore: number; // -1 means no job description was used
+  createdAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AnalyzerService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/analyze';
+  private baseUrl = 'http://localhost:8080/api';
 
   analyze(file: File, jobDescription: string): Observable<AnalysisResult> {
     const formData = new FormData();
@@ -24,6 +32,14 @@ export class AnalyzerService {
     if (jobDescription.trim()) {
       formData.append('jobDescription', jobDescription);
     }
-    return this.http.post<AnalysisResult>(this.apiUrl, formData);
+    return this.http.post<AnalysisResult>(`${this.baseUrl}/analyze`, formData);
+  }
+
+  getHistory(): Observable<HistoryItem[]> {
+    return this.http.get<HistoryItem[]>(`${this.baseUrl}/history`);
+  }
+
+  getHistoryItem(id: number): Observable<AnalysisResult> {
+    return this.http.get<AnalysisResult>(`${this.baseUrl}/history/${id}`);
   }
 }

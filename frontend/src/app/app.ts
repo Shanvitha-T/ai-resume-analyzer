@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AnalyzerService, AnalysisResult } from './analyzer.service';
+import { AnalyzerService, AnalysisResult, HistoryItem } from './analyzer.service';
 
 @Component({
   selector: 'app-root',
@@ -8,14 +8,26 @@ import { AnalyzerService, AnalysisResult } from './analyzer.service';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
   selectedFile = signal<File | null>(null);
   jobDescription = '';
   loading = signal(false);
   error = signal('');
   result = signal<AnalysisResult | null>(null);
+  history = signal<HistoryItem[]>([]);
 
   constructor(private analyzer: AnalyzerService) {}
+
+  ngOnInit() {
+    this.loadHistory();
+  }
+
+  loadHistory() {
+    this.analyzer.getHistory().subscribe({
+      next: (items) => this.history.set(items),
+      error: () => this.history.set([]),
+    });
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -36,11 +48,23 @@ export class App {
       next: (res) => {
         this.result.set(res);
         this.loading.set(false);
+        this.loadHistory();
       },
       error: (err) => {
         this.error.set(err?.error?.error ?? 'Something went wrong. Is the backend running?');
         this.loading.set(false);
       },
+    });
+  }
+
+  openHistory(id: number) {
+    this.error.set('');
+    this.analyzer.getHistoryItem(id).subscribe({
+      next: (res) => {
+        this.result.set(res);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      error: () => this.error.set('Could not load that saved analysis.'),
     });
   }
 }

@@ -320,3 +320,68 @@ li { margin-bottom: 6px; }
 .good-box {background: #95d0be40; font-style:American Typewriter;}
 .bad-box { background: #ba67673f; font-style:American Typewriter; }
 .tips-box { background: #4658a13b; font-style:American Typewriter;}
+
+.history-title {
+  margin: 0 0 12px;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-list li {
+  margin: 0;
+}
+
+.history-item {
+  width: 100%;
+  margin: 0;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f9fafb;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.history-item:hover:not(:disabled) {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  transform: none;
+  box-shadow: none;
+}
+
+.h-name {
+  flex: 1;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.h-date {
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.h-score {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.h-score.match {
+  background: #d1fae5;
+  color: #065f46;
+}
