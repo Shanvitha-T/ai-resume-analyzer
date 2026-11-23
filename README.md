@@ -79,8 +79,35 @@ Open http://localhost:4200.
 | GET | `/api/history/{id}` | One saved analysis |
 | GET | `/api/health` | Health check |
 
+## Challenges and what I have learned
+
+**1. Spring Boot 4 changed Jackson's package.**
+`ObjectMapper` moved from `com.fasterxml.jackson.databind` to `tools.jackson.databind`, and Jackson 3 no longer throws checked `IOException`s. I read the compiler errors, found the new package, and adjusted the `catch` blocks. *Lesson: major framework upgrades change APIs, so read the error and the release notes before assuming your code is wrong.*
+
+**2. Uploads failed silently with "Is the backend running?"**
+Angular showed a generic error, but the real cause was in the Spring Boot log: `MaxUploadSizeExceededException`. Spring's default upload limit is 1 MB. I raised `spring.servlet.multipart.max-file-size` to 5 MB to match the Python service. *Lesson: when the UI shows a vague error, check each layer's logs, starting from the backend.*
+
+**3. Scores did not display because of a field-name mismatch.**
+Python returns `overall_score`, Java uses `overallScore`, and `@JsonProperty` made Spring send the underscore name to Angular, which then read `undefined`. I confirmed it by calling the API directly in the browser, then switched to `@JsonAlias` so Java accepts the Python name but sends camelCase. *Lesson: verify the actual JSON on the wire instead of assuming it, and keep naming conventions consistent across services.*
+
+**4. A model rejected forced tool choice.**
+Claude returned a 400 error for `tool_choice` of type `tool`. I switched to `auto` and relied on a clear system prompt. *Lesson: model capabilities differ, and the API's error messages are specific, so read them.*
+
+**5. Keeping secrets out of Git.**
+I moved the API key into `.env` and the database password into `application.properties`, both git-ignored, and committed `.example` templates instead. Before the first push I searched the whole Git history for secrets. *Lesson: check history before pushing, because deleting a leaked file later does not remove it from past commits.*
+
+**6. CSS conic-gradient rings were unreliable.**
+My CSS-variable ring rendered as a flat circle. I replaced it with an SVG circle whose arc length is calculated from the score. *Lesson: choose the simpler, more portable technique when a clever one fails.*
+
+**What I would do differently**
+
+- Add automated tests (pytest for the AI service, JUnit for the backend) from the start.
+- Define the JSON contract once (for example an OpenAPI spec) so the three services cannot drift apart.
+- Add authentication and per-user history early rather than last.
+
 ## Roadmap
 
 - User accounts and per-user history (JWT)
 - Docker Compose for one-command setup
 - Deployment with a live demo link
+
