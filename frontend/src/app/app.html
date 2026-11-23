@@ -40,28 +40,36 @@
     <section class="card results">
       <div class="scores">
         <div class="score-block">
-          <div
-            class="ring"
-            [style.--p]="r.overallScore"
-            [class.good]="r.overallScore >= 75"
-            [class.ok]="r.overallScore >= 50 && r.overallScore < 75"
-            [class.low]="r.overallScore < 50"
-          >
-            <div class="ring-inner">{{ r.overallScore }}</div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120" width="120" height="120">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="#e5e7eb" stroke-width="12" />
+              <circle
+                cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+                stroke-dasharray="326.7"
+                [attr.stroke-dashoffset]="326.7 * (1 - r.overallScore / 100)"
+                [attr.stroke]="r.overallScore >= 75 ? '#10b981' : r.overallScore >= 50 ? '#f59e0b' : '#ef4444'"
+              />
+            </svg>
+            <span class="ring-num">{{ r.overallScore }}</span>
           </div>
           <span class="cap">Overall score</span>
         </div>
 
         @if (r.matchScore !== null && r.matchScore !== undefined) {
           <div class="score-block">
-            <div
-              class="ring"
-              [style.--p]="r.matchScore"
-              [class.good]="r.matchScore >= 75"
-              [class.ok]="r.matchScore >= 50 && r.matchScore < 75"
-              [class.low]="r.matchScore < 50"
-            >
-              <div class="ring-inner">{{ r.matchScore }}</div>
+            <div class="ring-wrap">
+              <svg viewBox="0 0 120 120" width="120" height="120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#e5e7eb" stroke-width="12" />
+                <circle
+                  cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-linecap="round"
+                  transform="rotate(-90 60 60)"
+                  stroke-dasharray="326.7"
+                  [attr.stroke-dashoffset]="326.7 * (1 - r.matchScore / 100)"
+                  [attr.stroke]="r.matchScore >= 75 ? '#10b981' : r.matchScore >= 50 ? '#f59e0b' : '#ef4444'"
+                />
+              </svg>
+              <span class="ring-num">{{ r.matchScore }}</span>
             </div>
             <span class="cap">Job match</span>
           </div>
@@ -86,9 +94,9 @@
         </div>
       }
 
-              <div class="boxes">
+      <div class="boxes">
         <div class="box good-box">
-          <div class="box-head"><span class="box-icon"></span><h2 style="color: green; font-weight: 1000;">STRENGTHS</h2></div>
+          <div class="box-head"><h2 style="color: green; font-weight: 800;">STRENGTHS</h2></div>
           <ul>
             @for (s of r.strengths; track s) {
               <li>{{ s }}</li>
@@ -97,7 +105,7 @@
         </div>
 
         <div class="box bad-box">
-          <div class="box-head"><span class="box-icon"></span><h2 style="color: rgb(173, 22, 22); font-weight: 1000;">WEAKNESS</h2></div>
+          <div class="box-head"><h2 style="color: rgb(173, 22, 22); font-weight: 800;">WEAKNESSES</h2></div>
           <ul>
             @for (w of r.weaknesses; track w) {
               <li>{{ w }}</li>
@@ -106,7 +114,7 @@
         </div>
 
         <div class="box tips-box">
-          <div class="box-head"><span class="box-icon"></span><h2 style="color: rgba(122, 14, 122, 0.973); font-weight: 1000;">SUGGESTIONS</h2></div>
+          <div class="box-head"><h2 style="color: rgb(122, 14, 122); font-weight: 800;">SUGGESTIONS</h2></div>
           <ul>
             @for (s of r.suggestions; track s) {
               <li>{{ s }}</li>
@@ -116,7 +124,8 @@
       </div>
     </section>
   }
-    @if (history().length) {
+
+  @if (history().length) {
     <section class="card history">
       <h2 class="history-title">Past analyses</h2>
       <ul class="history-list">

@@ -385,3 +385,52 @@ li { margin-bottom: 6px; }
   background: #d1fae5;
   color: #065f46;
 }
+
+.ring-inner {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgb(168, 168, 230);
+  color: #1f2937;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.ring-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.ring-num {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.ring-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.ring-wrap svg {
+  display: block;
+}
+
+.ring-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1f2937;
+}
