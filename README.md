@@ -28,6 +28,17 @@ Angular (4200)  →  Spring Boot (8080)  →  FastAPI (8000)  →  Claude API
 - **Clear errors end to end:** wrong file type, file too large, scanned PDF, and AI service down each return a friendly message.
 - **Separation of concerns:** the AI service is independent, so the model can be swapped without touching the Java code.
 
+## Run with Docker (recommended)
+
+Requirements: Docker Desktop and an Anthropic API key.
+
+```
+copy .env.example .env      # then fill in your real values
+docker compose up --build -d
+```
+
+Open http://localhost:4200. Stop everything with `docker compose down`.
+
 ## Run it locally
 
 **Requirements:** JDK 17+, Node 18+, Python 3.10+, MySQL 8, and an Anthropic API key.
